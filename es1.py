@@ -10,3 +10,6 @@ def main():#indentando si creano dei blocchi
 
 if __name__ == "__main__":  #doppio underscore (doubleunder) -> dunder
     main()
+"""Per commentare un blocco
+   Per commentare un blocco
+"""

@@ -9,13 +9,13 @@ class Bird(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # Caricamento delle immagini per le diverse fasi del battito d'ala
-        self.images =  [pygame.image.load('sprites/bird-1.png').convert_alpha(),
-                        pygame.image.load('sprites/bird-2.png').convert_alpha(),
-                        pygame.image.load('sprites/bird-3.png').convert_alpha()]
+        self.images =  [pygame.image.load('sprites/bird-1.png'),
+                        pygame.image.load('sprites/bird-2.png'),
+                        pygame.image.load('sprites/bird-3.png')]
 
         self.speed = speed  # Velocità dell'uccello
         self.current_image = 0  # Indice dell'immagine attuale
-        self.image = pygame.image.load('sprites/bird-1.png').convert_alpha()
+        self.image = pygame.image.load('sprites/bird-1.png')
         self.mask = pygame.mask.from_surface(self.image)  # Maschera per la collisione precisa
 
         # Posizione iniziale dell'uccello sullo schermo
@@ -46,7 +46,7 @@ class Tubo(pygame.sprite.Sprite):
     def __init__(self, inverted, xpos, ysize, tubo_width, tubo_height, screen_height):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load('sprites/tubo.png').convert_alpha()
+        self.image = pygame.image.load('sprites/tubo.png')
         self.image = pygame.transform.scale(self.image, (tubo_width, tubo_height))
 
         self.rect = self.image.get_rect()
@@ -67,7 +67,7 @@ class Tubo(pygame.sprite.Sprite):
 class Base(pygame.sprite.Sprite):
     def __init__(self, xpos, base_width, base_height, screen_height):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('sprites/base.png').convert_alpha()
+        self.image = pygame.image.load('sprites/base.png')
         self.image = pygame.transform.scale(self.image, (base_width, base_height))
 
         self.mask = pygame.mask.from_surface(self.image)
@@ -93,16 +93,16 @@ def get_random_tubi(xpos, tubo_width, tubo_height, screen_height):
 
 # Funzione per visualizzare il punteggio
 def visualizza_punteggio(punteggio, screen):
-    punti_unita = [pygame.image.load('sprites/0.png').convert_alpha(),
-                   pygame.image.load('sprites/1.png').convert_alpha(),
-                   pygame.image.load('sprites/2.png').convert_alpha(),
-                   pygame.image.load('sprites/3.png').convert_alpha(),
-                   pygame.image.load('sprites/4.png').convert_alpha(),
-                   pygame.image.load('sprites/5.png').convert_alpha(),
-                   pygame.image.load('sprites/6.png').convert_alpha(),
-                   pygame.image.load('sprites/7.png').convert_alpha(),
-                   pygame.image.load('sprites/8.png').convert_alpha(),
-                   pygame.image.load('sprites/9.png').convert_alpha()]
+    punti_unita = [pygame.image.load('sprites/0.png'),
+                   pygame.image.load('sprites/1.png'),
+                   pygame.image.load('sprites/2.png'),
+                   pygame.image.load('sprites/3.png'),
+                   pygame.image.load('sprites/4.png'),
+                   pygame.image.load('sprites/5.png'),
+                   pygame.image.load('sprites/6.png'),
+                   pygame.image.load('sprites/7.png'),
+                   pygame.image.load('sprites/8.png'),
+                   pygame.image.load('sprites/9.png')]
     punti_decine = punti_unita
     punti_centinaia = punti_unita
     
@@ -118,9 +118,11 @@ def visualizza_punteggio(punteggio, screen):
 
 
 def main():
+    # Inizializzazione del modulo mixer e di Pygame
     pygame.mixer.init()
     pygame.init()
     
+    # Inizializzazione delle variabili di gioco
     punteggio = 0
     screen_width = 400
     screen_height = 600
@@ -132,37 +134,46 @@ def main():
     tubo_width = 80
     tubo_height = 500
     
+    # Percorsi per i file audio
     volo = 'audio/volo.wav'
     collisione = 'audio/collisione.wav'
     
+    # Creazione della finestra di gioco
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Flappy Bird')
 
+    # Caricamento delle immagini di sfondo e altri elementi grafici
     background = pygame.image.load('sprites/background.png')
     background = pygame.transform.scale(background, (screen_width, screen_height))
-    img_inizio = pygame.image.load('sprites/inizio.png').convert_alpha()
+    img_inizio = pygame.image.load('sprites/inizio.png')
     img_inizio = pygame.transform.scale(img_inizio, (screen_width, screen_height))
-    game_over = pygame.image.load('sprites/game_over.png').convert_alpha()
+    game_over = pygame.image.load('sprites/game_over.png')
     
+    # Creazione di gruppi di sprite
     bird_group = pygame.sprite.Group()
     bird = Bird(speed, screen_width, screen_height)
     bird_group.add(bird)
     base_group = pygame.sprite.Group()
 
-    for i in range (2):
+    # Creazione di due oggetti Base per simulare il movimento della terra
+    for i in range(2):
         base = Base(base_width * i, base_width, base_height, screen_height)
         base_group.add(base)
         
     tubo_group = pygame.sprite.Group()
-    for i in range (2):
+    
+    # Creazione di due coppie casuali di tubi all'inizio del gioco
+    for i in range(2):
         tubi = get_random_tubi(screen_width * i + 800, tubo_width, tubo_height, screen_height)
         tubo_group.add(tubi[0])
         tubo_group.add(tubi[1])
 
     clock = pygame.time.Clock()
     inizio = True
+    
+    # Loop principale del gioco per la schermata di inizio
     while inizio:
-        clock.tick(15)
+        clock.tick(20)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -176,9 +187,10 @@ def main():
         screen.blit(background, (0, 0))
         screen.blit(img_inizio, (0, 0))
 
+        # Gestione del movimento del terreno
         if is_off_screen(base_group.sprites()[0]):
             base_group.remove(base_group.sprites()[0])
-
+            
             new_ground = Base(base_width - 20, base_width, base_height, screen_height)
             base_group.add(new_ground)
 
@@ -189,8 +201,9 @@ def main():
         
         pygame.display.update()
 
+    # Loop principale del gioco dopo la schermata di inizio
     while True:
-        clock.tick(15)
+        clock.tick(20)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -202,11 +215,13 @@ def main():
 
         screen.blit(background, (0, 0))
 
+        # Gestione del movimento del terreno
         if is_off_screen(base_group.sprites()[0]):
             base_group.remove(base_group.sprites()[0])
             new_base = Base(base_width - 20, base_width, base_height, screen_height)
             base_group.add(new_base)
 
+        # Gestione del movimento e rigenerazione dei tubi
         if is_off_screen(tubo_group.sprites()[0]):
             tubo_group.remove(tubo_group.sprites()[0])
             tubo_group.remove(tubo_group.sprites()[0])
@@ -215,6 +230,7 @@ def main():
             tubo_group.add(tubi[1])
             punteggio += 1
 
+        # Aggiornamento e disegno degli sprite
         bird_group.update(gravity)
         base_group.update(game_speed)
         tubo_group.update(game_speed)
@@ -224,6 +240,7 @@ def main():
 
         pygame.display.update()
 
+        # Gestione delle collisioni e fine del gioco
         if (pygame.sprite.groupcollide(bird_group, base_group, False, False, pygame.sprite.collide_mask) or
                 pygame.sprite.groupcollide(bird_group, tubo_group, False, False, pygame.sprite.collide_mask)):
             pygame.mixer.music.load(collisione)
@@ -233,8 +250,6 @@ def main():
             pygame.display.update()
             time.sleep(1.5)
             break
-    
-    print(f"Punteggio: {punteggio}")
     
 if __name__ == "__main__":
     main()

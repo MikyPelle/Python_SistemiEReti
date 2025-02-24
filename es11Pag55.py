@@ -1,20 +1,14 @@
 def main():
     x = [0, 1, 2, 3, 5, 6, 7, 8]
-    y = []
-    z = []
+    lung = len(x)
+    mezzo = lung // 2
+    y = x[:mezzo]
+    z = x[mezzo:]
     
-    for i in x:
-        if i < len(x) / 2:
-            y.append(i)
-        else:
-            z.append(i)
-            
-    print(x)
-    print(y)
-    print(z)
-    y.append(5)
-    print(y)
-
+    y.append(z[0])
+    print(f"Lista intera --> {x}")
+    print(f"Prima metà della lista --> {y}")
+    print(f"Seconda metà della lista --> {z}")
 
 if __name__ == "__main__":
     main()
